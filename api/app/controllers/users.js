@@ -77,19 +77,9 @@ async function login(req, res) {
 }
 
 async function profile(req, res) {
-  const { token } = req.cookies;
-  console.log(token + "fr,l;,f;,ld");
-  if (token) {
-    try {
-      const userData = userService.verifyToken(token);
-      const { username, _id } = await userService.readUserById(userData.id);
-      res.json({ username, _id });
-    } catch (err) {
-      res.status(401).json("Token is invalid");
-    }
-  } else {
-    res.status(401).json("No token provided");
-  }
+  const userData = userService.verifyToken(token);
+  const { username, _id } = await userService.readUserById(userData.id);
+  res.json({ username, _id });
 }
 
 async function logout(req, res) {
