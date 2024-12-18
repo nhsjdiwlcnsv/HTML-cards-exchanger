@@ -18,10 +18,6 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
-  avatar: {
-    type: String,
-    required: false,
-  },
 });
 
 const User = mongoose.model("User", UserSchema);
