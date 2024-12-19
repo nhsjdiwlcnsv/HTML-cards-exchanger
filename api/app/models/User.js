@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  avatar: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "avatars.files",
+  },
 });
 
 const User = mongoose.model("User", UserSchema);
