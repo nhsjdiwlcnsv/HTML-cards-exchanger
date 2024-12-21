@@ -5,11 +5,13 @@ const User = require("../models/User.js");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = process.env.JWT_SECRET;
 
-async function create(username, email, password) {
+async function create(data) {
+  const { username, email, password, avatar } = data;
   const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
 
-  const existingUsername = await User.findOne({ email });
+  const existingUsername = await User.findOne({ username });
   const existingEmail = await User.findOne({ email });
+
   if (existingEmail) {
     throw new Error("User with this email already exists");
   }
@@ -18,7 +20,12 @@ async function create(username, email, password) {
     throw new Error("User with the same username exists");
   }
 
-  return await User.create({ username, email, password: hashedPassword });
+  return await User.create({
+    username,
+    email,
+    password: hashedPassword,
+    avatar,
+  });
 }
 
 async function readUserByUsername(username) {

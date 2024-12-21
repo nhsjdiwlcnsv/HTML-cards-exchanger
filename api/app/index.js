@@ -10,5 +10,6 @@ require("dotenv").config();
 mongoose.connect(process.env.MONGO_URL);
 
 app.use("/api/user", require("./routes/users"));
+app.use("/api/postcard", require("./routes/postcards"));
 
 module.exports = app;

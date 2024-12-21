@@ -1,13 +1,16 @@
 const userService = require("../services/users");
 
 async function create(req, res) {
-  const { username, email, password } = req.body;
+  const data = req.body;
 
   try {
-    const userDoc = await userService.create(username, email, password);
+    if (req.file) {
+      data.avatar = req.file.id;
+    }
+    const userDoc = await userService.create(data);
     res.json(userDoc);
   } catch (e) {
-    res.status(422).json(e);
+    res.status(409).json(e.message);
   }
 }
 
@@ -20,8 +23,8 @@ async function read(req, res) {
     } else {
       res.status(404).json("User not found");
     }
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (e) {
+    res.status(500).json(e.message);
   }
 }
 
@@ -30,14 +33,17 @@ async function update(req, res) {
   const updates = req.body;
 
   try {
+    if (req.file) {
+      updates.avatar = req.file.id;
+    }
     const updatedUser = await userService.update(id, updates);
     if (updatedUser) {
       res.json(updatedUser);
     } else {
       res.status(404).json("User not found");
     }
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (e) {
+    res.status(500).json(e.message);
   }
 }
 
@@ -51,8 +57,8 @@ async function remove(req, res) {
     } else {
       res.status(404).json("User not found");
     }
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (e) {
+    res.status(500).json(e.message);
   }
 }
 
@@ -69,7 +75,7 @@ async function login(req, res) {
       });
       res.cookie("token", token).json(userDoc);
     } else {
-      res.status(422).json("password not ok");
+      res.status(401).json("password not ok");
     }
   } else {
     res.status(404).json("User not found");
