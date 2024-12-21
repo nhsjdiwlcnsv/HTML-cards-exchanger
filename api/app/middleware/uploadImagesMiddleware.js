@@ -5,19 +5,11 @@ const mongoose = require("mongoose");
 const storage = new GridFsStorage({
   url: process.env.MONGO_URL,
   file: async (req, file) => {
-    const collection = file.fieldname;
-    const existingFile = await mongoose.connection.db
-      .collection(`${collection}.files`)
-      .findOne({
-        filename: file.originalname,
-      });
-
-    if (existingFile) {
-      return {
-        filename: existingFile.filename,
-        bucketName: collection,
-      };
+    let collection = file.fieldname;
+    if (collection === "bgImage" || collection === "frameImage") {
+      collection = "images";
     }
+
     const filename = `${Date.now()}_${file.originalname}`;
     const fileInfo = {
       filename: filename,
@@ -30,7 +22,6 @@ const storage = new GridFsStorage({
 
 const filter = (req, file, cb) => {
   if (file.fieldname === "audio") {
-    console.log("audio");
     if (!file.originalname.match(/\.(mp3|wav|ogg)$/)) {
       req.fileValidationError =
         "Invalid audio format. Only mp3, wav, and ogg files are allowed.";
@@ -38,7 +29,6 @@ const filter = (req, file, cb) => {
     }
     cb(null, true);
   } else {
-    console.log("image");
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
       req.fileValidationError =
         "Invalid image format. Only jpeg, jpg, png and gif images are allowed.";
@@ -49,11 +39,11 @@ const filter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter: filter });
-// const uploadAudio = multer({ storage, fileFilter: audioFilter });
 
 const uploadAvatar = upload.single("avatars");
 const uploadPostcard = upload.fields([
-  { name: "images", maxCount: 2 },
+  { name: "bgImage", maxCount: 1 },
+  { name: "frameImage", maxCount: 1 },
   { name: "stickers", maxCount: 20 },
   { name: "audio", maxCount: 1 },
 ]);
