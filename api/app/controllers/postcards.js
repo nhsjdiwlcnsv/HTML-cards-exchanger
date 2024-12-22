@@ -1,5 +1,4 @@
 const postcardService = require("../services/postcards");
-const sendEmailNotification = require("../services/notification");
 
 async function create(req, res) {
   try {
