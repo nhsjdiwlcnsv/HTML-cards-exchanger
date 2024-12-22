@@ -13,5 +13,7 @@ mongoose.connect(process.env.MONGO_URL);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/user", require("./routes/users"));
+app.use("/api/postcard", require("./routes/postcards"));
+app.use("/api/assets", require("./routes/assets"));
 
 module.exports = app;
