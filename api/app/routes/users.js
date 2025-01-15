@@ -54,11 +54,12 @@ const router = express.Router();
  *                   type: string
  *                   description: Username of the new user.
  *                 email:
- *                 type: string
- *                 description: Email of the new user.
+ *                   type: string
+ *                   description: Email of the new user.
  *       422:
  *         description: Validation error (e.g., username already taken).
  */
+
 
 /**
  * @swagger
