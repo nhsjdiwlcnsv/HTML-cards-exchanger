@@ -27,7 +27,7 @@
         ]
       },
       {
-        "source": "/html-cards-exchanger-yt9i.vercel.app/(.*)",
+        "source": "html-cards-exchanger-yt9i.vercel.app/(.*)",
         "headers": [
           { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
