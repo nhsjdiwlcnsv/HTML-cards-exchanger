@@ -40,6 +40,10 @@ async function readUserById(id) {
   return await User.findById(id);
 }
 
+async function readAllUsers(){
+  return await User.find();
+}
+
 async function update(id, updates) {
   if (updates.email) {
     const existingEmail = await User.findOne({ email: updates.email });
@@ -86,4 +90,5 @@ module.exports = {
   validatePassword,
   generateToken,
   verifyToken,
+  readAllUsers
 };

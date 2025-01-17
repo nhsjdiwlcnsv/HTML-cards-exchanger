@@ -3,6 +3,8 @@ const assetsController = require("../controllers/assets");
 
 const router = express.Router();
 
+router.get("/avatars/:id", assetsController.getAvatar);
+router.get("/images/:id", assetsController.getImage);
 /**
  * @swagger
  * tags:
