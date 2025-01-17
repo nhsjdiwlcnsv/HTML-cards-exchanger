@@ -12,7 +12,7 @@ import CardsPage from "./pages/Cards";
 import CreatePostcardPage from "./pages/CreatePostcard";
 import PostcardPage from "./pages/Postcard";
 
-axios.defaults.baseURL = "api";
+axios.defaults.baseURL = "https://html-cards-exchanger.vercel.app/api";
 axios.defaults.withCredentials = true;
 
 function App() {
