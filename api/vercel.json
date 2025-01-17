@@ -15,5 +15,22 @@
         "Access-Control-Allow-Origin": "*"
       }
     }
+  ],
+  "rewrites": [
+        { "source": "/(.*)", "destination": "server.js" }
+    ],
+  "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "*" }
+        ]
+      },
+      {
+        "source": "/html-cards-exchanger-yt9i.vercel.app/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "*" }
+        ]
+      }
   ]
 }
