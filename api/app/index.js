@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(process.env.MONGO_URL + "?directConnection=true");
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/user", require("./routes/users"));
