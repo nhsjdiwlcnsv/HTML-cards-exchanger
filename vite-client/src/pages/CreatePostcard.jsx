@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ItemTypes = {
@@ -18,13 +19,22 @@ const DraggableText = ({ text, position, setPosition }) => {
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move', position: 'absolute', left: position.x, top: position.y }}>
+    <div
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'move',
+        position: 'absolute',
+        left: position.x,
+        top: position.y,
+      }}
+    >
       {text}
     </div>
   );
 };
 
-const PostcardPreview = ({ title, description, setTitlePosition, setDescriptionPosition }) => {
+const PostcardPreview = ({ title, description, setTitlePosition, setDescriptionPosition, frame }) => {
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.TEXT,
     drop: (item, monitor) => {
@@ -45,11 +55,48 @@ const PostcardPreview = ({ title, description, setTitlePosition, setDescriptionP
   return (
     <div
       ref={drop}
-      className="postcard-preview border border-gray-300 rounded-lg shadow-lg"
-      style={{ width: "297mm", height: "210mm", position: "relative", backgroundColor: "#fff" }}
+      className="postcard-preview relative"
+      style={{
+        width: "297mm",
+        height: "210mm",
+        position: "relative",
+        backgroundColor: "#fff",
+      }}
     >
-      <DraggableText text={title.value} position={title.position} setPosition={setTitlePosition} />
-      <DraggableText text={description.value} position={description.position} setPosition={setDescriptionPosition} />
+      {/* Frame */}
+      {frame && (
+        <div
+          className="absolute"
+          style={{
+            borderTop: frame.type === "top-bottom" || frame.type === "full" 
+              ? `${frame.thickness}px solid ${frame.color || 'black'}` 
+              : 'none',
+            borderBottom: frame.type === "top-bottom" || frame.type === "full" 
+              ? `${frame.thickness}px solid ${frame.color || 'black'}` 
+              : 'none',
+            borderLeft: frame.type === "left-right" || frame.type === "full" 
+              ? `${frame.thickness}px solid ${frame.color || 'black'}` 
+              : 'none',
+            borderRight: frame.type === "left-right" || frame.type === "full" 
+              ? `${frame.thickness}px solid ${frame.color || 'black'}` 
+              : 'none',
+            borderRadius: "8px",
+            boxSizing: "border-box",
+            inset: "0",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      <DraggableText
+        text={title.value}
+        position={title.position}
+        setPosition={setTitlePosition}
+      />
+      <DraggableText
+        text={description.value}
+        position={description.position}
+        setPosition={setDescriptionPosition}
+      />
     </div>
   );
 };
@@ -61,11 +108,12 @@ export default function CreatePostcardPage() {
   const [selectedRecipients, setSelectedRecipients] = useState([]);
   const [title, setTitle] = useState({ value: "", position: { x: 0, y: 0 } });
   const [description, setDescription] = useState({ value: "", position: { x: 0, y: 0 } });
-  const [frame, setFrame] = useState({ type: "full", thickness: 1, color: "", image: null });
+  const [frame, setFrame] = useState({ type: "full", thickness: 1, color: "#000", image: null });
   const [background, setBackground] = useState(null);
   const [audio, setAudio] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -102,6 +150,7 @@ export default function CreatePostcardPage() {
 
       const response = await axios.post("/postcard", postcardData);
       console.log("Postcard created:", response.data);
+      navigate(`/postcard/${response.data._id}`);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -123,6 +172,7 @@ export default function CreatePostcardPage() {
             description={description}
             setTitlePosition={handleTitlePosition}
             setDescriptionPosition={handleDescriptionPosition}
+            frame={frame} // Pass frame properties
           />
         </div>
         <div className="flex-1 p-4">
@@ -163,7 +213,7 @@ export default function CreatePostcardPage() {
               >
                 {allUsers.map((user) => (
                   <option key={user._id} value={user._id}>
-                    {user.username} {/* Adjust this according to the user object structure */}
+                    {user.username}
                   </option>
                 ))}
               </select>
@@ -218,19 +268,20 @@ export default function CreatePostcardPage() {
               />
             </div>
 
-            {/* Audio Upload */}
-            <div>
+            {/* Audio Input */}
+            {/* Uncomment if audio upload is needed */}
+            {/* <div>
               <label className="block mb-1">Audio:</label>
               <input
                 type="file"
                 onChange={(e) => setAudio(e.target.files[0])}
                 className="border p-2 w-full"
               />
-            </div>
+            </div> */}
 
             <button
               type="submit"
-              className={`bg-blue-500 text-white p-2 rounded ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`primary ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? "Creating..." : "Create Postcard"}

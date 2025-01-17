@@ -1,4 +1,39 @@
 const assetsService = require("../services/assets");
+const mongoose = require("mongoose");
+const Grid = require("gridfs-stream");
+const { ObjectId } = require("mongodb");
+const conn = mongoose.connection;
+
+async function getAvatar(req, res) {
+  console.log("B")
+  let gfs = Grid(conn.db, mongoose.mongo);
+  
+  gfs.collection("avatars");
+  let gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {bucketName: 'avatars'});
+
+  const file = await gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) })
+  console.log(req.params.id)
+  if(!file){
+    return res.json(null);
+  }
+  const readStream = gridfsBucket.openDownloadStreamByName(file.filename);
+  
+  readStream.pipe(res);
+}
+
+async function getImage(req, res) {
+  console.log("B")
+  let gfs = Grid(conn.db, mongoose.mongo);
+  
+  gfs.collection("images");
+  let gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {bucketName: 'images'});
+
+  const file = await gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) })
+  console.log(req.params.id)
+  const readStream = gridfsBucket.openDownloadStreamByName(file.filename);
+  
+  readStream.pipe(res);
+}
 
 async function readAllImages(req, res) {
   try {
@@ -28,6 +63,8 @@ async function readAllStickers(req, res) {
 }
 
 module.exports = {
+  getAvatar,
+  getImage,
   readAllImages,
   readAllAudio,
   readAllStickers,

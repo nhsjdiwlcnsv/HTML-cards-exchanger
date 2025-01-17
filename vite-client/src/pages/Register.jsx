@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const uploadRef = useRef();
+  const navigate = useNavigate();
 
   async function registerUser(ev) {
     // ev.preventDefault();
@@ -36,6 +37,7 @@ export default function RegisterPage() {
         password,
       });
       alert("Registration successful! Now you can login.");
+      navigate('/login');
     } catch (e) {
       alert("Registration failed. Please try again later.");
     }

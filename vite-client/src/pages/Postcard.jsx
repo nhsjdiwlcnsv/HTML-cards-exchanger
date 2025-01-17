@@ -88,19 +88,30 @@ export default function PostcardPage() {
           {postcard.description.value}
         </p>
 
-        {/* Frame */}
-        {postcard.frame && (
-          <div
-            className="absolute"
-            style={{
-              border: `${postcard.frame.thickness}px solid ${postcard.frame.color || 'black'}`,
-              borderRadius: "8px",
-              boxSizing: "border-box",
-              inset: "0",
-              pointerEvents: "none",
-            }}
-          />
-        )}
+{/* Frame */}
+{postcard.frame && (
+  <div
+    className="absolute"
+    style={{
+      borderTop: postcard.frame.type === "top-bottom" || postcard.frame.type === "full" 
+                  ? `${postcard.frame.thickness}px solid ${postcard.frame.color || 'black'}` 
+                  : 'none',
+      borderBottom: postcard.frame.type === "top-bottom" || postcard.frame.type === "full" 
+                    ? `${postcard.frame.thickness}px solid ${postcard.frame.color || 'black'}` 
+                    : 'none',
+      borderLeft: postcard.frame.type === "left-right" || postcard.frame.type === "full" 
+                   ? `${postcard.frame.thickness}px solid ${postcard.frame.color || 'black'}` 
+                   : 'none',
+      borderRight: postcard.frame.type === "left-right" || postcard.frame.type === "full" 
+                    ? `${postcard.frame.thickness}px solid ${postcard.frame.color || 'black'}` 
+                    : 'none',
+      borderRadius: "8px",
+      boxSizing: "border-box",
+      inset: "0",
+      pointerEvents: "none",
+    }}
+  />
+)}
 
         {/* Stickers */}
         {postcard.stickers.map((sticker, index) => (

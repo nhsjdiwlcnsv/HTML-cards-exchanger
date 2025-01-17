@@ -20,7 +20,7 @@ function App() {
     <UserContextProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<IndexPage />} />
+          <Route index element={<CardsPage title="My owned postcards" api_response="/postcard/owned"/>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account" element={<ProfilePage />} />
