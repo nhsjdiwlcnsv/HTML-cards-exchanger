@@ -83,13 +83,26 @@ async function login(req, res) {
 }
 
 async function profile(req, res) {
+  const { token } = req.cookies;
+  if(token){
+  // console.log(`async function profile token ${token}`)
   const userData = userService.verifyToken(token);
-  const { username, _id } = await userService.readUserById(userData.id);
-  res.json({ username, _id });
+  const { username, email, avatar, _id } = await userService.readUserById(
+    userData.id
+  );
+  res.json({ username, email, avatar, _id });
+  }else{
+    res.json(null);
+  }
 }
 
 async function logout(req, res) {
   res.cookie("token", "").json(true);
 }
 
-module.exports = { create, read, update, remove, login, profile, logout };
+async function getAll(req, res){
+  const users= await userService.readAllUsers();
+  res.json(users);
+}
+
+module.exports = { create, read, update, remove, login, profile, logout, getAll };
